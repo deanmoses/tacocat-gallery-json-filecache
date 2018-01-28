@@ -38,7 +38,7 @@
 
 	try {
 		// URL of which to retrieve contents
-		$url = 'http://tacocat.com/zenphoto/' . $album . '?api';
+		$url = 'http://tacocat.com/zenphoto/' . $album . '?json';
 
 		// retrieve contents of URL as a string
 		$json_contents = file_get_contents($url);
@@ -63,9 +63,6 @@
 
 		// Write the JSON to the file
 		file_put_contents($file, $json_contents);
-
-		// return JSON as response
-		//echo($json_contents);
 
 		//
 		// Return success message in JSON format

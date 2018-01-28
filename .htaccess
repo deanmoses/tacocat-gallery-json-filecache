@@ -1,0 +1,30 @@
+RewriteEngine On
+
+# Redirect all HTTP requests to HTTPS
+# This is already specified in the root dir, I wish I didn't have to re-specify it
+RewriteCond %{HTTPS} !=on
+RewriteRule ^/?(.*) https://%{SERVER_NAME}%{REQUEST_URI} [R=301,L]
+
+# ignore files and directories from all rewrite rules    
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule (^|/)index\.php$ - [L,NC]
+
+<filesMatch ".(json)$">
+# Cache *.json files for 2 hours (2 hours x 60 mins x 60 seconds)
+#Header set Cache-Control "max-age=7200, public"
+# add entity tag
+FileETag MTime Size
+</filesMatch>
+
+# Allow AJAX access from subdomains like cdn.tacocat.com by
+# adding the Access-Control-Allow-Origin header.  It has to
+# match the subdomain exactly: the spec does not allow for
+# wildcards.  So if the request comes from cdn.tacocat.com,
+# this will return Access-Control-Allow-Origin cdn.tacocat.com
+#SetEnvIf Origin ^(https?://.+\.tacocat\.com(?::\d{1,5})?)$   CORS_ALLOW_ORIGIN=$1
+#Header append Access-Control-Allow-Origin  %{CORS_ALLOW_ORIGIN}e   env=CORS_ALLOW_ORIGIN
+#Header merge  Vary "Origin"
+
+Header set Access-Control-Allow-Origin "*"
