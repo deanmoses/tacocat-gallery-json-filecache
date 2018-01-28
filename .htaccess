@@ -11,12 +11,15 @@ RewriteCond %{REQUEST_FILENAME} !-d
 
 RewriteRule (^|/)index\.php$ - [L,NC]
 
-<filesMatch ".(json)$">
-# Cache *.json files for 2 hours (2 hours x 60 mins x 60 seconds)
-#Header set Cache-Control "max-age=7200, public"
-# add entity tag
-FileETag MTime Size
-</filesMatch>
+<IfModule mod_expires.c>
+	Header unset ETag
+    Header set cache-control: public
+    # Enable expirations
+    ExpiresActive On
+    # Disable caching of JSON files
+    ExpiresByType application/json "access plus 0 seconds"
+</IfModule>
+FileETag None
 
 # Allow AJAX access from subdomains like cdn.tacocat.com by
 # adding the Access-Control-Allow-Origin header.  It has to
